@@ -5,6 +5,7 @@
 
 $pageTitle = "Gestion des catégories";
 require_once __DIR__ . '/../includes/header.php';
+echo '<link rel="stylesheet" href="/css/categories.css">';
 
 requireAdmin();
 

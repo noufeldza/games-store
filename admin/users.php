@@ -5,6 +5,7 @@
 
 $pageTitle = "Gestion des utilisateurs";
 require_once __DIR__ . '/../includes/header.php';
+echo '<link rel="stylesheet" href="/css/users.css">';
 
 requireAdmin();
 

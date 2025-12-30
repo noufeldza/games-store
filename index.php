@@ -46,6 +46,7 @@ $newReleases = fetchAll("
 // Récupérer les catégories
 $categories = fetchAll("SELECT * FROM categories ORDER BY name");
 ?>
+    <link rel="stylesheet" href="/css/index.css">
 
 <!-- Hero Section avec Carrousel -->
 <section class="hero-section">

@@ -5,7 +5,11 @@
 
 $pageTitle = "Connexion";
 require_once __DIR__ . '/../includes/header.php';
+?>
 
+<link rel="stylesheet" href="/css/login.css">
+
+<?php
 // Redirection si déjà connecté
 if (isLoggedIn()) {
     redirect('/index.php');
@@ -59,7 +63,6 @@ if (isLoggedIn()) {
                 <button type="submit" class="btn btn-primary btn-block btn-lg">
                     <i class="fas fa-sign-in-alt"></i> Se connecter
                 </button>
-            </form>
             
             <div class="auth-footer">
                 <p>Pas encore de compte? <a href="/pages/register.php">Créer un compte</a></p>

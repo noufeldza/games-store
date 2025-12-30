@@ -6,7 +6,6 @@
 $pageTitle = "Ma Wishlist";
 require_once __DIR__ . '/../includes/header.php';
 
-requireLogin();
 
 $userId = $_SESSION['user_id'];
 
@@ -25,6 +24,7 @@ $wishlistItems = fetchAll("
     ORDER BY w.added_at DESC
 ", [$userId]);
 ?>
+    <link rel="stylesheet" href="/css/wishlist.css">
 
 <section class="wishlist-section">
     <div class="container">

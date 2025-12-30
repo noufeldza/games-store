@@ -51,7 +51,6 @@ $reviews = fetchAll("
     LIMIT 10
 ", [$gameId]);
 
-// Calculer la note moyenne
 $avgRating = fetchOne("SELECT AVG(rating) as avg, COUNT(*) as count FROM reviews WHERE game_id = ?", [$gameId]);
 
 // Jeux similaires
@@ -66,32 +65,37 @@ $similarGames = fetchAll("
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
+<link rel="stylesheet" href="/css/game-detail.css">
+
 <section class="game-detail-section">
     <div class="container">
-        <!-- Header du jeu -->
-        <div class="game-detail-header" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('<?php echo getBannerImage($game['image'], $game['banner_image'] ?? null); ?>');">
+        <!-- Header du jeu avec background -->
+        <div class="game-detail-header" style="background-image: linear-gradient(rgba(15, 20, 25, 0.85), rgba(15, 20, 25, 0.95)), url('<?php echo getBannerImage($game['image'], $game['banner_image'] ?? null); ?>');">
             <div class="game-detail-info">
                 <div class="game-detail-image">
                     <img src="<?php echo getGameImage($game['image']); ?>" 
                          alt="<?php echo escape($game['title']); ?>"
                          onerror="this.src='/assets/images/placeholder.jpg'">
+                    <div class="image-overlay"></div>
                 </div>
                 <div class="game-detail-content">
                     <span class="game-category-badge">
                         <i class="fas <?php echo escape($game['category_icon'] ?? 'fa-gamepad'); ?>"></i>
                         <?php echo escape($game['category_name'] ?? 'Jeu'); ?>
                     </span>
-                    <h1><?php echo escape($game['title']); ?></h1>
+                    <h1 class="game-title-hero"><?php echo escape($game['title']); ?></h1>
                     <div class="game-meta-info">
                         <span><i class="fas fa-code"></i> <?php echo escape($game['developer']); ?></span>
                         <span><i class="fas fa-building"></i> <?php echo escape($game['publisher']); ?></span>
-                        <span><i class="fas fa-calendar"></i> <?php echo date('d/m/Y', strtotime($game['release_date'])); ?></span>
+                        <span><i class="fas fa-calendar-alt"></i> <?php echo date('d/m/Y', strtotime($game['release_date'])); ?></span>
                     </div>
                     <div class="game-rating-large">
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <i class="<?php echo $i <= round($avgRating['avg'] ?? 0) ? 'fas' : 'far'; ?> fa-star"></i>
-                        <?php endfor; ?>
-                        <span><?php echo number_format($avgRating['avg'] ?? 0, 1); ?> (<?php echo $avgRating['count'] ?? 0; ?> avis)</span>
+                        <div class="stars">
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <i class="<?php echo $i <= round($avgRating['avg'] ?? 0) ? 'fas' : 'far'; ?> fa-star"></i>
+                            <?php endfor; ?>
+                        </div>
+                        <span class="rating-text"><?php echo number_format($avgRating['avg'] ?? 0, 1); ?> / 5 (<?php echo $avgRating['count'] ?? 0; ?> avis)</span>
                     </div>
                 </div>
             </div>
@@ -100,7 +104,7 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="game-detail-layout">
             <!-- Contenu principal -->
             <main class="game-detail-main">
-                <!-- Galerie -->
+                <!-- Galerie / Trailer -->
                 <?php if ($game['video_url']): 
                     // Convertir l'URL YouTube au format embed
                     $videoUrl = $game['video_url'];
@@ -124,7 +128,7 @@ require_once __DIR__ . '/../includes/header.php';
                     }
                 ?>
                 <div class="game-trailer">
-                    <h3><i class="fas fa-play-circle"></i> Bande-annonce</h3>
+                    <h3 class="section-title"><i class="fas fa-play-circle"></i> Bande-annonce</h3>
                     <div class="video-container">
                         <iframe src="<?php echo escape($videoUrl); ?>" 
                                 frameborder="0" 
@@ -136,7 +140,7 @@ require_once __DIR__ . '/../includes/header.php';
                 
                 <!-- Description -->
                 <div class="game-description">
-                    <h3><i class="fas fa-info-circle"></i> À propos du jeu</h3>
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> À propos du jeu</h3>
                     <div class="description-content">
                         <?php echo nl2br(escape($game['description'])); ?>
                     </div>
@@ -145,7 +149,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <!-- Configuration requise -->
                 <?php if (!empty($game['system_requirements'])): ?>
                 <div class="system-requirements">
-                    <h3><i class="fas fa-desktop"></i> Configuration requise</h3>
+                    <h3 class="section-title"><i class="fas fa-desktop"></i> Configuration requise</h3>
                     <div class="requirements-content">
                         <?php echo nl2br(escape($game['system_requirements'])); ?>
                     </div>
@@ -154,30 +158,43 @@ require_once __DIR__ . '/../includes/header.php';
                 
                 <!-- Avis -->
                 <div class="game-reviews">
-                    <h3><i class="fas fa-comments"></i> Avis des joueurs</h3>
+                    <h3 class="section-title"><i class="fas fa-comments"></i> Avis des joueurs</h3>
                     
                     <?php if (isLoggedIn() && $alreadyOwned): ?>
                     <form id="reviewForm" class="review-form">
                         <input type="hidden" name="game_id" value="<?php echo $gameId; ?>">
                         <div class="rating-input">
-                            <span>Votre note:</span>
+                            <span class="rating-label">Votre note:</span>
                             <div class="star-rating">
                                 <?php for ($i = 5; $i >= 1; $i--): ?>
-                                <input type="radio" name="rating" value="<?php echo $i; ?>" id="star<?php echo $i; ?>">
+                                <input type="radio" name="rating" value="<?php echo $i; ?>" id="star<?php echo $i; ?>" required>
                                 <label for="star<?php echo $i; ?>"><i class="fas fa-star"></i></label>
                                 <?php endfor; ?>
                             </div>
                         </div>
-                        <textarea name="comment" class="form-control" placeholder="Partagez votre avis sur ce jeu..." rows="3"></textarea>
+                        <textarea name="comment" class="form-control" placeholder="Partagez votre avis sur ce jeu..." rows="4" required></textarea>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Publier
+                            <i class="fas fa-paper-plane"></i> Publier mon avis
                         </button>
                     </form>
+                    <?php elseif (isLoggedIn() && !$alreadyOwned): ?>
+                    <div class="review-notice">
+                        <i class="fas fa-lock"></i>
+                        <p>Vous devez posséder ce jeu pour laisser un avis.</p>
+                    </div>
+                    <?php elseif (!isLoggedIn()): ?>
+                    <div class="review-notice">
+                        <i class="fas fa-user"></i>
+                        <p><a href="/pages/login.php">Connectez-vous</a> pour laisser un avis.</p>
+                    </div>
                     <?php endif; ?>
                     
                     <div class="reviews-list">
                         <?php if (empty($reviews)): ?>
-                        <p class="no-reviews">Aucun avis pour le moment. Soyez le premier à donner votre avis!</p>
+                        <p class="no-reviews">
+                            <i class="fas fa-comment-slash"></i>
+                            Aucun avis pour le moment. Soyez le premier à donner votre avis!
+                        </p>
                         <?php else: ?>
                         <?php foreach ($reviews as $review): ?>
                         <div class="review-card">
@@ -187,7 +204,10 @@ require_once __DIR__ . '/../includes/header.php';
                                      onerror="this.src='/assets/images/avatars/default-avatar.png'">
                                 <div class="review-meta">
                                     <span class="review-author"><?php echo escape($review['username']); ?></span>
-                                    <span class="review-date"><?php echo date('d/m/Y', strtotime($review['created_at'])); ?></span>
+                                    <span class="review-date">
+                                        <i class="fas fa-clock"></i>
+                                        <?php echo date('d/m/Y', strtotime($review['created_at'])); ?>
+                                    </span>
                                 </div>
                                 <div class="review-rating">
                                     <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -208,13 +228,13 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="purchase-card">
                     <div class="price-display">
                         <?php if ($game['discount_percent'] > 0): ?>
-                        <span class="discount-badge-large">-<?php echo $game['discount_percent']; ?>%</span>
+                        <div class="discount-badge-large">-<?php echo $game['discount_percent']; ?>%</div>
                         <div class="price-info">
                             <span class="original-price"><?php echo number_format($game['price'], 2); ?> €</span>
                             <span class="final-price"><?php echo number_format($game['final_price'], 2); ?> €</span>
                         </div>
                         <?php else: ?>
-                        <span class="final-price">
+                        <span class="final-price-large">
                             <?php echo $game['final_price'] == 0 ? 'Gratuit' : number_format($game['final_price'], 2) . ' €'; ?>
                         </span>
                         <?php endif; ?>
@@ -224,7 +244,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <div class="owned-badge">
                         <i class="fas fa-check-circle"></i> Vous possédez ce jeu
                     </div>
-                    <a href="/pages/library.php" class="btn btn-primary btn-block">
+                    <a href="/pages/library.php" class="btn btn-primary btn-block btn-lg">
                         <i class="fas fa-gamepad"></i> Voir dans ma bibliothèque
                     </a>
                     <?php else: ?>
@@ -243,22 +263,22 @@ require_once __DIR__ . '/../includes/header.php';
                 
                 <!-- Infos du jeu -->
                 <div class="game-info-card">
-                    <h4>Informations</h4>
+                    <h4><i class="fas fa-info-circle"></i> Informations</h4>
                     <ul class="info-list">
                         <li>
-                            <span class="info-label">Développeur</span>
+                            <span class="info-label"><i class="fas fa-code"></i> Développeur</span>
                             <span class="info-value"><?php echo escape($game['developer']); ?></span>
                         </li>
                         <li>
-                            <span class="info-label">Éditeur</span>
+                            <span class="info-label"><i class="fas fa-building"></i> Éditeur</span>
                             <span class="info-value"><?php echo escape($game['publisher']); ?></span>
                         </li>
                         <li>
-                            <span class="info-label">Date de sortie</span>
+                            <span class="info-label"><i class="fas fa-calendar-alt"></i> Date de sortie</span>
                             <span class="info-value"><?php echo date('d/m/Y', strtotime($game['release_date'])); ?></span>
                         </li>
                         <li>
-                            <span class="info-label">Genre</span>
+                            <span class="info-label"><i class="fas fa-tag"></i> Genre</span>
                             <span class="info-value"><?php echo escape($game['category_name'] ?? 'Non défini'); ?></span>
                         </li>
                     </ul>
@@ -269,22 +289,25 @@ require_once __DIR__ . '/../includes/header.php';
         <!-- Jeux similaires -->
         <?php if (!empty($similarGames)): ?>
         <section class="similar-games">
-            <h3><i class="fas fa-gamepad"></i> Jeux similaires</h3>
-            <div class="games-grid small">
+            <h3 class="section-title"><i class="fas fa-gamepad"></i> Jeux similaires</h3>
+            <div class="games-grid">
                 <?php foreach ($similarGames as $similar): ?>
                 <div class="game-card">
                     <a href="/pages/game-detail.php?id=<?php echo $similar['id']; ?>" class="game-image">
                         <img src="<?php echo getGameImage($similar['image']); ?>" 
                              alt="<?php echo escape($similar['title']); ?>"
                              onerror="this.src='/assets/images/placeholder.jpg'">
+                        <div class="game-overlay">
+                            <i class="fas fa-eye"></i>
+                        </div>
                     </a>
                     <div class="game-info">
-                        <h3 class="game-title">
+                        <h4 class="game-title">
                             <a href="/pages/game-detail.php?id=<?php echo $similar['id']; ?>">
                                 <?php echo escape($similar['title']); ?>
                             </a>
-                        </h3>
-                        <span class="price-final"><?php echo number_format($similar['final_price'], 2); ?> €</span>
+                        </h4>
+                        <span class="game-price"><?php echo number_format($similar['final_price'], 2); ?> €</span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -300,6 +323,10 @@ document.getElementById('reviewForm')?.addEventListener('submit', async function
     e.preventDefault();
     
     const formData = new FormData(this);
+    const submitBtn = this.querySelector('button[type="submit"]');
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
     
     try {
         const response = await fetch('/api/users.php?action=review', {
@@ -316,7 +343,83 @@ document.getElementById('reviewForm')?.addEventListener('submit', async function
         }
     } catch (error) {
         alert('Erreur de connexion');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publier mon avis';
     }
+});
+
+// Add to cart
+document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', async function() {
+        const gameId = this.getAttribute('data-game-id');
+        
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ajout...';
+        
+        try {
+            const response = await fetch('/api/cart.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ game_id: gameId })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.classList.add('in-cart');
+                this.innerHTML = '<i class="fas fa-check"></i> Dans le panier';
+            } else {
+                alert(data.error || 'Erreur');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-cart-plus"></i> Ajouter au panier';
+            }
+        } catch (error) {
+            alert('Erreur de connexion');
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-cart-plus"></i> Ajouter au panier';
+        }
+    });
+});
+
+// Toggle wishlist
+document.querySelectorAll('.toggle-wishlist').forEach(button => {
+    button.addEventListener('click', async function() {
+        const gameId = this.getAttribute('data-game-id');
+        const isInWishlist = this.classList.contains('in-wishlist');
+        
+        try {
+            const response = await fetch('/api/wishlist.php', {
+                method: isInWishlist ? 'DELETE' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ game_id: gameId })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.classList.toggle('in-wishlist');
+                const icon = this.querySelector('i');
+                if (this.classList.contains('in-wishlist')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.innerHTML = '<i class="fas fa-heart"></i> Dans la wishlist';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.innerHTML = '<i class="far fa-heart"></i> Ajouter à la wishlist';
+                }
+            } else {
+                alert(data.error || 'Erreur');
+            }
+        } catch (error) {
+            alert('Erreur de connexion');
+        }
+    });
 });
 </script>
 

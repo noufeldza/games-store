@@ -5,7 +5,7 @@
 
 $pageTitle = "Administration";
 require_once __DIR__ . '/../includes/header.php';
-
+echo '<link rel="stylesheet" href="/css/dashboard.css">';
 requireAdmin();
 
 // Statistiques générales

@@ -1,6 +1,7 @@
     </main>
 
     <!-- Footer -->
+    <link rel="stylesheet" href="/css/footer.css">
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">

@@ -26,7 +26,6 @@ $featured = $_GET['featured'] ?? '';
 // Construction de la requête
 $where = [];
 $params = [];
-
 if (!empty($search)) {
     $where[] = "(g.title LIKE ? OR g.description LIKE ? OR g.developer LIKE ?)";
     $searchTerm = "%$search%";
@@ -65,6 +64,7 @@ $order = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
 
 // Compter le total
 $countSql = "SELECT COUNT(*) as total FROM games g $whereClause";
+
 $countResult = fetchOne($countSql, $params);
 $totalGames = $countResult['total'] ?? 0;
 $totalPages = ceil($totalGames / $limit);
@@ -90,6 +90,7 @@ if (!empty($categoryId)) {
     $selectedCategory = fetchOne("SELECT * FROM categories WHERE id = ?", [$categoryId]);
 }
 ?>
+    <link rel="stylesheet" href="/css/store.css">
 
 <section class="store-section">
     <div class="container">

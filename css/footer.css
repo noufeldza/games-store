@@ -1,0 +1,86 @@
+/*
+ * Footer-specific styles for Games Store
+ * Move all .footer, .footer-section, .footer-title, .footer-text, .footer-social, .footer-links, .footer-bottom, etc. styles here from style.css
+ */
+
+.footer {
+    /* Example: */
+    background: #23272f;
+    color: #fff;
+    padding: 40px 0 0 0;
+    font-size: 16px;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1 1 220px;
+    margin: 20px;
+}
+
+.footer-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.footer-text {
+    margin-bottom: 15px;
+    color: #b0b3b8;
+}
+
+.footer-social {
+    margin-top: 10px;
+}
+
+.social-link {
+    color: #fff;
+    margin-right: 10px;
+    font-size: 1.2em;
+    transition: color 0.2s;
+}
+
+.social-link:hover {
+    color: #00bfff;
+}
+
+.footer-subtitle {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    color: #00bfff;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 6px;
+}
+
+.footer-links a {
+    color: #b0b3b8;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 18px 0 8px 0;
+    border-top: 1px solid #333;
+    margin-top: 30px;
+    color: #b0b3b8;
+    font-size: 0.95em;
+}
