@@ -62,6 +62,24 @@ $similarGames = fetchAll("
     LIMIT 4
 ", [$game['category_id'], $gameId]);
 
+// Enregistrer en cookie la liste des derniers jeux consultés (non-essentiel)
+// Respecte le consentement via safe_setcookie()
+try {
+    $recent = [];
+    if (!empty($_COOKIE['last_viewed'])) {
+        $decoded = json_decode($_COOKIE['last_viewed'], true);
+        if (is_array($decoded)) $recent = $decoded;
+    }
+    // Préfixe l'ID courant et enlève les doublons
+    array_unshift($recent, $gameId);
+    $recent = array_values(array_unique($recent));
+    // Limite à 10 éléments
+    $recent = array_slice($recent, 0, 10);
+    safe_setcookie('last_viewed', $recent, 30);
+} catch (Exception $e) {
+    // ne pas bloquer la page si cookie non disponible
+}
+
 require_once __DIR__ . '/../includes/header.php';
 ?>
 

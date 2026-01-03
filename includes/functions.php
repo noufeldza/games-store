@@ -3,7 +3,19 @@
  * Fonctions utilitaires pour Games Store
  */
 
-session_start();
+// Configurer et démarrer la session en garantissant des paramètres de cookie sécurisés
+$secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+if (session_status() === PHP_SESSION_NONE) {
+    @session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => $_SERVER['HTTP_HOST'] ?? '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    session_start();
+}
 
 require_once __DIR__ . '/../config/database.php';
 
@@ -90,14 +102,67 @@ function getCurrentUser() {
  */
 function getCartCount() {
     global $pdo;
-    if (!isLoggedIn()) {
-        return 0;
+    // Si l'utilisateur est connecté, compter dans la table cart
+    if (isLoggedIn()) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM cart WHERE user_id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $result = $stmt->fetch();
+        return (int)($result['count'] ?? 0);
     }
-    
-    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM cart WHERE user_id = ?");
-    $stmt->execute([$_SESSION['user_id']]);
-    $result = $stmt->fetch();
-    return $result['count'];
+
+    // Pour les invités, tenter de lire le panier depuis le cookie JSON (nom "cart" côté client)
+    if (!empty($_COOKIE['cart'])) {
+        $decoded = json_decode($_COOKIE['cart'], true);
+        if (is_array($decoded)) {
+            // si le cookie contient un tableau id=>qty ou liste d'ids
+            $sum = 0;
+            $isAssoc = array_values($decoded) !== $decoded;
+            if ($isAssoc) {
+                foreach ($decoded as $v) { $sum += (int)$v; }
+            } else {
+                $sum = count($decoded);
+            }
+            return $sum;
+        }
+    }
+
+    return 0;
+}
+
+/**
+ * Vérifie si l'utilisateur a accepté les cookies non essentiels
+ */
+function hasCookieConsent() {
+    return (isset($_COOKIE['cookie_consent']) && $_COOKIE['cookie_consent'] === 'accepted');
+}
+
+/**
+ * Retourne le panier stocké côté client (cookie JSON) si présent
+ */
+function getCartFromCookie() {
+    if (empty($_COOKIE['cart'])) return [];
+    $decoded = json_decode($_COOKIE['cart'], true);
+    return is_array($decoded) ? $decoded : [];
+}
+
+/**
+ * Définit un cookie non-essentiel seulement si l'utilisateur a donné son consentement.
+ * Retourne true si le cookie a été écrit ou false sinon.
+ */
+function safe_setcookie($name, $value, $days = 30) {
+    $consent = $_COOKIE['cookie_consent'] ?? null;
+    if ($consent !== 'accepted') return false;
+
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    $expires = time() + max(1, (int)$days) * 24 * 3600;
+    return setcookie($name, is_string($value) ? $value : json_encode($value), [
+        'expires' => $expires,
+        'path' => '/',
+        'domain' => $_SERVER['HTTP_HOST'] ?? '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
 }
 
 /**

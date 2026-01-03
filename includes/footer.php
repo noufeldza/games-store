@@ -65,5 +65,20 @@
         <script src="<?php echo $script; ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>
+    <!-- Cookie consent banner (global) -->
+    <div id="cookie-consent" class="cookie-consent" style="display:none;position:fixed;bottom:18px;left:18px;right:18px;z-index:9999;background:#0f1724;color:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 24px rgba(2,6,23,.6);">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:220px;">
+                <strong>Nous utilisons des cookies</strong>
+                <p style="margin:6px 0 0;font-size:13px;opacity:.9;">Ce site utilise des cookies pour garder votre panier, préférences et améliorer l'expérience. En continuant, vous acceptez l'utilisation des cookies.</p>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <button id="accept-cookies" class="btn btn-primary">Accepter</button>
+                <button id="reject-cookies" class="btn btn-outline">Refuser</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/cookies.js"></script>
 </body>
 </html>

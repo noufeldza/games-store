@@ -7,6 +7,25 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/functions.php';
 
+// Helper: set cookie only when user consented to non-essential cookies
+function safe_setcookie($name, $value, $options = []) {
+    $consent = $_COOKIE['cookie_consent'] ?? null;
+    if ($consent !== 'accepted') {
+        return false;
+    }
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    $defaults = [
+        'expires' => time() + 30 * 24 * 3600,
+        'path' => '/',
+        'domain' => $_SERVER['HTTP_HOST'] ?? '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ];
+    $opts = array_merge($defaults, $options);
+    return setcookie($name, $value, $opts);
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 
