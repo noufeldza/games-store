@@ -107,6 +107,9 @@ $users = fetchAll("
                 <div class="card-body">
                     <table class="admin-table">
                         <thead>
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
                             <tr>
                                 <th>Avatar</th>
                                 <th>Utilisateur</th>

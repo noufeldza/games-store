@@ -7,6 +7,9 @@ $pageTitle = "Gestion des jeux";
 require_once __DIR__ . '/../includes/header.php';
 echo '<link rel="stylesheet" href="/css/games.css">';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 requireAdmin();
 
 // Récupérer les catégories pour le formulaire

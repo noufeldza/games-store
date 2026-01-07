@@ -7,6 +7,11 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/functions.php';
 
+// Démarrage de la session pour la gestion des utilisateurs
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Lire les données JSON
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 $action = $input['action'] ?? $_GET['action'] ?? $_POST['action'] ?? '';

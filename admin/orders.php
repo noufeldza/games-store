@@ -4,6 +4,9 @@
  */
 
 $pageTitle = "Gestion des commandes";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../includes/header.php';
 echo '<link rel="stylesheet" href="/css/orders.css">';
 requireAdmin();
