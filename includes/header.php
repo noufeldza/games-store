@@ -19,7 +19,7 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
     <title><?php echo isset($pageTitle) ? escape($pageTitle) . ' - ' : ''; ?>Games Store</title>
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/style.css">
-
+    <link rel="icon" href="/assets/images/logo icon/playing-videogame.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>

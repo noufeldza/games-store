@@ -7,7 +7,7 @@
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'games_store');
 define('DB_USER', 'root');
-define('DB_PASS', 'supra_2006');
+define('DB_PASS', 'gear5');
 
 /**
  * Connexion à la base de données avec PDO
