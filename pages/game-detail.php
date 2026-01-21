@@ -2,7 +2,7 @@
 /**
  * Page détail d'un jeu - Games Store
  */
-
+require_once __DIR__ . '/../api/auth_bootstrap.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 $gameId = intval($_GET['id'] ?? 0);

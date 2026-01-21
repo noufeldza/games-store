@@ -3,7 +3,7 @@
  * Bibliothèque - Games Store
  * Liste des jeux achetés par l'utilisateur
  */
-
+require_once __DIR__ . '/../api/auth_bootstrap.php';
 $pageTitle = "Ma Bibliothèque";
 require_once __DIR__ . '/../includes/header.php';
 

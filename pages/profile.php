@@ -2,7 +2,7 @@
 /**
  * Profil utilisateur - Games Store
  */
-
+require_once __DIR__ . '/../api/auth_bootstrap.php';
 $pageTitle = "Mon Profil";
 require_once __DIR__ . '/../includes/header.php';
 

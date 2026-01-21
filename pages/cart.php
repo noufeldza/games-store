@@ -2,7 +2,7 @@
 /**
  * Page Panier - Games Store
  */
-
+require_once __DIR__ . '/../api/auth_bootstrap.php';
 $pageTitle = "Mon Panier";
 require_once __DIR__ . '/../includes/header.php';
 

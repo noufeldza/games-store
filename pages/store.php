@@ -3,7 +3,7 @@
  * Boutique - Games Store
  * Liste des jeux avec filtres
  */
-
+require_once __DIR__ . '/../api/auth_bootstrap.php';
 $pageTitle = "Boutique";
 require_once __DIR__ . '/../includes/header.php';
 

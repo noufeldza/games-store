@@ -2,7 +2,7 @@
 /**
  * Dashboard Admin - Games Store
  */
-
+require_once __DIR__ . '/../api/auth_bootstrap.php';
 $pageTitle = "Administration";
 require_once __DIR__ . '/../includes/header.php';
 echo '<link rel="stylesheet" href="/css/dashboard.css">';

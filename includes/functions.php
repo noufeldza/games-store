@@ -3,7 +3,6 @@
  * Fonctions utilitaires pour Games Store
  */
 
-session_start();
 
 require_once __DIR__ . '/../config/database.php';
 

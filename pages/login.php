@@ -2,7 +2,7 @@
 /**
  * Page de connexion - Games Store
  */
-
+require_once __DIR__ . '/../api/auth_bootstrap.php';
 $pageTitle = "Connexion";
 require_once __DIR__ . '/../includes/header.php';
 ?>

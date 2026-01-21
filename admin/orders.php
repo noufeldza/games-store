@@ -2,7 +2,7 @@
 /**
  * Gestion des commandes - Admin Games Store
  */
-
+require_once __DIR__ . '/../api/auth_bootstrap.php';
 $pageTitle = "Gestion des commandes";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

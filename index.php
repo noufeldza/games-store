@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/api/auth_bootstrap.php';
 /**
  * Page d'accueil - Games Store
  * Affiche les jeux en vedette et les promotions
@@ -208,6 +209,7 @@ $categories = fetchAll("SELECT * FROM categories ORDER BY name");
         </div>
     </div>
 </section>
+
 <?php endif; ?>
 
 <!-- Call to Action -->
